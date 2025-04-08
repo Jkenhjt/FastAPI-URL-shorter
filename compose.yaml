@@ -1,0 +1,71 @@
+services:
+
+
+##############              API Container                ##############
+
+  backend:
+    depends_on:
+      - db
+      - redis
+    build:
+      context: .
+    restart: always
+    ports:
+      - 8080:8000
+    volumes:
+      - backend_volume:/backend
+
+
+##############           PostgreSQL Container            ##############
+
+  db:
+    image: postgres:latest
+    ports:
+      - 5431:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db_url_shorter
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+
+
+##############              Redis Container              ##############
+
+  redis:
+    build:
+      context: ./redis_config
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_volume:/redis_config
+
+
+##############              Nginx Container              ##############
+
+  nginx:
+    depends_on:
+      - backend
+    build:
+      context: ./nginx_config
+    restart: always
+    ports:
+      - 443:443
+    volumes:
+      - nginx_volume:/nginx_config
+
+
+volumes:
+  backend_volume:
+
+  db_volume:
+
+  redis_volume:
+  nginx_volume:
