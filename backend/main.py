@@ -8,8 +8,8 @@ from database.database import UsersEngine, LinksEngine
 from routers.links import routerLinks
 from routers.users import routerUsers
 
-from models.links import BaseLinks
-from models.users import BaseUsers
+from schemas.links import BaseLinks
+from schemas.users import BaseUsers
 
 import sqlalchemy
 
@@ -46,13 +46,14 @@ app.include_router(routerLinks)
 async def start():
     async with UsersEngine.begin() as conn:
         try:
+            await conn.run_sync(BaseUsers.metadata.drop_all)    # delete
             await conn.run_sync(BaseUsers.metadata.create_all)
         except:
             pass
 
-
     async with LinksEngine.begin() as conn:
         try:
+            await conn.run_sync(BaseLinks.metadata.drop_all)    # delete
             await conn.run_sync(BaseLinks.metadata.create_all)
         except:
             pass

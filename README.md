@@ -25,3 +25,19 @@ Nginx
 Docker
 
 Docker Compose
+
+# Steps to deploy
+
+### 1. Create DB
+```
+psql -U [user]
+CREATE DATBASE [db name, and change it in 'config.py']
+```
+
+### 2. Start Docker Compose
+```
+cd fastapi_url_shortener
+docker compose up --build        *Wait until the deployment is complete*
+```
+
+### 3. Deployment finished

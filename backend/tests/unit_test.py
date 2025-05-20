@@ -8,13 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.database import UsersEngine, LinksEngine
 
-from models.users import UsersScheme
-from models.links import LinksScheme
+from schemas.users import UsersScheme
+from schemas.links import LinksScheme
 
 from redis.aioredis_client import AioredisSession
 
-from schemas.users import UsersRecieve
-from schemas.links import LinksRecieve
+from models.users import UsersModel
+from models.links import LinksModel
 
 from security.jwt import create_token
 from security.bcrypt_secure import bcrypt_securing
@@ -41,7 +41,8 @@ class TestDatabase():
 
     @pytest.mark.asyncio
     async def test_users_database(self):
-        async with AsyncSession(UsersEngine, expire_on_commit=False) as session:
+        async with AsyncSession(UsersEngine,
+                                expire_on_commit=False) as session:
             session.add(self.user)
             await session.commit()
 
@@ -60,7 +61,8 @@ class TestDatabase():
 
     @pytest.mark.asyncio
     async def test_links_database(self):
-        async with AsyncSession(LinksEngine, expire_on_commit=False) as session:
+        async with AsyncSession(LinksEngine,
+                                expire_on_commit=False) as session:
             session.add(self.link)
             await session.commit()
 
@@ -144,10 +146,15 @@ async def test_redis_session():
     async_session_model = aioredis_model
 
     assert await async_session_model.set("test", "test") == True
-    assert await async_session_model.hset("test_dict", mapping={"test": "ok", "aio": "redis", "pytest": "good"}) == 3
+    assert await async_session_model.hset("test_dict",
+                                          mapping={"test":"ok",
+                                                   "aio": "redis",
+                                                   "pytest": "good"}) == 3
 
     assert await async_session_model.get("test") == "test"
-    assert await async_session_model.hgetall("test_dict") == {"test": "ok", "aio": "redis", "pytest": "good"}
+    assert await async_session_model.hgetall("test_dict") == {"test": "ok",
+                                                              "aio": "redis",
+                                                              "pytest": "good"}
 
 
 
@@ -167,13 +174,10 @@ def test_account_register():
         "password": password
     }
 
-    resp = requests.post("http://0.0.0.0:8000/register", json=payload)
+    resp = requests.post("http://0.0.0.0:8000/register",
+                         json=payload)
 
     assert resp.status_code == 200
-
-    assert resp.json()["username"] == username
-    assert resp.json()["password"] == password
-
 
 def test_account_login():
     username: str = "admin"
@@ -184,7 +188,8 @@ def test_account_login():
         "password": password
     }
 
-    resp = requests.post("http://0.0.0.0:8000/login", json=payload)
+    resp = requests.post("http://0.0.0.0:8000/login",
+                         json=payload)
 
     assert resp.status_code == 200
 
@@ -203,7 +208,9 @@ def test_create_link():
         "time_ending": "7d"
     }
 
-    resp = requests.post("http://0.0.0.0:8000/create_link", json=payload, cookies={"session": cookies})
+    resp = requests.post("http://0.0.0.0:8000/create_link",
+                         json=payload,
+                         cookies={"session": cookies})
 
     assert resp.status_code == 200
 
@@ -217,13 +224,14 @@ def test_get_link():
     assert resp.status_code == 200
 
 def test_delete_link():
-    resp = requests.delete(shorted_url, cookies={"session": cookies})
+    resp = requests.delete(shorted_url,
+                           cookies={"session": cookies})
     assert resp.status_code == 200
 
 # Schemas Module
 
 def test_user_scheme():
-    test_scheme = UsersRecieve(
+    test_scheme = UsersModel(
         username="testusername",
         password="testpass"
     )
@@ -232,7 +240,7 @@ def test_user_scheme():
     assert test_scheme.password == "testpass"
 
 def test_link_scheme():
-    test_scheme = LinksRecieve(
+    test_scheme = LinksModel(
         url="http://test.com",
         time_ending="7d"
     )

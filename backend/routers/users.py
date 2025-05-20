@@ -8,9 +8,9 @@ from sqlalchemy.exc import NoResultFound
 
 from database.database import SessionUsers
 
-from models.users import UsersScheme
+from schemas.users import UsersScheme
 
-from schemas.users import UsersRecieve
+from models.users import UsersModel
 
 from security.jwt import create_token
 from security.bcrypt_secure import bcrypt_securing
@@ -21,47 +21,60 @@ routerUsers = APIRouter()
 limiter = Limiter(key_func=get_remote_address)
 
 
-@routerUsers.post("/register")
+@routerUsers.post("/register", tags=["Account"])
 @limiter.limit("10/minute")
-async def register(account: UsersRecieve, request: Request, dbSession: SessionUsers):
-    account_secured = bcrypt_securing(account.username)
-
-    accountDB = await dbSession.execute(select(UsersScheme).where(UsersScheme.username == account_secured).limit(1))
-
+async def register(account: UsersModel,
+                   request: Request,
+                   dbSession: SessionUsers):
     try:
-        if(accountDB.scalar_one() != None):
-            raise HTTPException(status_code=406, detail="User already exist")
+        account_result = await dbSession.execute(select(UsersScheme)
+                                                .where(UsersScheme.username == account.username))
+        if(account_result.scalar_one() != None):
+            raise HTTPException(status_code=406,
+                                detail="User already exist")
     except NoResultFound:
         pass
 
     db_new_user = UsersScheme(
-        username=account_secured,
+        username=account.username,
         password=bcrypt_securing(account.password)
     )
 
     dbSession.add(db_new_user)
     await dbSession.commit()
 
+<<<<<<< HEAD
 @routerUsers.post("/login")
+=======
+    return Response(status_code=200)
+
+@routerUsers.post("/login", tags=["Account"])
+>>>>>>> cdf2d22 (	modified:   README.md)
 @limiter.limit("10/minute")
-async def login(account: UsersRecieve, request: Request, response: Response, dbSession: SessionUsers):
+async def login(account: UsersModel,
+                request: Request,
+                response: Response,
+                dbSession: SessionUsers):
     try:
         dbAccount = (
             await dbSession.execute(
                 select(UsersScheme)
-                .where(UsersScheme.username == bcrypt_securing(account.username))
-                .limit(1)
+                .where(UsersScheme.username == account.username)
             )
         ).scalar_one()
 
         if(dbAccount.password != bcrypt_securing(account.password)):
             raise NoResultFound
     except NoResultFound:
-        raise HTTPException(status_code=404, detail="Username or password is incorrect")
+        raise HTTPException(status_code=404,
+                            detail="Username or password is incorrect")
 
     token: str = create_token(dbAccount.id)
 
-    await dbSession.execute(update(UsersScheme).where(UsersScheme.id == dbAccount.id).values(token_session=token))
+    await dbSession.execute(update(UsersScheme)
+                           .where(UsersScheme.id == dbAccount.id)
+                           .values(token_session=token))
     await dbSession.commit()
 
-    return response.set_cookie(key="session", value=token)
+    return response.set_cookie(key="session",
+                               value=token)

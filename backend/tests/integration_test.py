@@ -14,13 +14,10 @@ def test_account_register():
         "password": password
     }
 
-    resp = requests.post("http://0.0.0.0:8000/register", json=payload)
+    resp = requests.post("http://0.0.0.0:8000/register",
+                         json=payload)
 
     assert resp.status_code == 200
-
-    assert resp.json()["username"] == username
-    assert resp.json()["password"] == password
-
 
 def test_account_login():
     payload = {
@@ -28,7 +25,8 @@ def test_account_login():
         "password": password
     }
 
-    resp = requests.post("http://0.0.0.0:8000/login", json=payload)
+    resp = requests.post("http://0.0.0.0:8000/login",
+                         json=payload)
 
     assert resp.status_code == 200
 
@@ -43,7 +41,9 @@ def test_create_link():
         "time_ending": "7d"
     }
 
-    resp = requests.post("http://0.0.0.0:8000/create_link", json=payload, cookies={"session": cookies})
+    resp = requests.post("http://0.0.0.0:8000/create_link",
+                         json=payload,
+                         cookies={"session": cookies})
 
     assert resp.status_code == 200
 
@@ -57,5 +57,6 @@ def test_get_link():
     assert resp.status_code == 200
 
 def test_delete_link():
-    resp = requests.delete(shorted_url, cookies={"session": cookies})
+    resp = requests.delete(shorted_url,
+                           cookies={"session": cookies})
     assert resp.status_code == 200
