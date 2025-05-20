@@ -42,8 +42,6 @@ async def register(account: UsersRecieve, request: Request, dbSession: SessionUs
     dbSession.add(db_new_user)
     await dbSession.commit()
 
-    return {"username": account.username, "password": account.password}
-
 @routerUsers.post("/login")
 @limiter.limit("10/minute")
 async def login(account: UsersRecieve, request: Request, response: Response, dbSession: SessionUsers):
