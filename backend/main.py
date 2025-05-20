@@ -43,17 +43,15 @@ app.include_router(routerLinks)
 
 
 @app.on_event("startup")
-async def start():
+async def start() -> None:
     async with UsersEngine.begin() as conn:
         try:
-            await conn.run_sync(BaseUsers.metadata.drop_all)    # delete
             await conn.run_sync(BaseUsers.metadata.create_all)
         except:
             pass
 
     async with LinksEngine.begin() as conn:
         try:
-            await conn.run_sync(BaseLinks.metadata.drop_all)    # delete
             await conn.run_sync(BaseLinks.metadata.create_all)
         except:
             pass
@@ -65,5 +63,5 @@ async def start():
     await LinksEngine.dispose()
 
 @app.on_event("shutdown")
-async def stop():
+async def stop() -> None:
     await app.state.async_redis_session.close()

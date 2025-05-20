@@ -1,6 +1,6 @@
 import time
 
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Request, Response, HTTPException
 from fastapi.responses import RedirectResponse
 
 from slowapi import Limiter
@@ -40,7 +40,7 @@ async def check_token(token: str,
 
 @routerLinks.get("/", tags=["Index.html"])
 @limiter.limit("120/minute")
-async def index(request: Request):
+async def index(request: Request) -> None:
     raise HTTPException(status_code=404,
                         detail="Have not done so yet")
 
@@ -49,7 +49,7 @@ async def index(request: Request):
 async def creating_link(linksRecieve: LinksModel,
                         request: Request,
                         dbSession: SessionUsers,
-                        dbLinks: SessionLinks):
+                        dbLinks: SessionLinks) -> dict:
     try:
         accountData = await check_token(request.cookies.get("session"),
                                         dbSession)
@@ -100,7 +100,7 @@ async def creating_link(linksRecieve: LinksModel,
 @limiter.limit("60000/minute")
 async def redirecting_to(shorted_url_id: str,
                          request: Request,
-                         dbLinks: SessionLinks):
+                         dbLinks: SessionLinks) -> None:
     try:
         cached_url = await request.app.state.async_redis_session.get((DOMAIN + "/" + shorted_url_id))
         if(cached_url != None):
@@ -126,7 +126,7 @@ async def redirecting_to(shorted_url_id: str,
 async def delete_shorted_url(shorted_url_id: str,
                              request: Request,
                              dbSession: SessionUsers,
-                             dbLinks: SessionLinks):
+                             dbLinks: SessionLinks) -> None:
     try:
         accountData = await check_token(request.cookies.get("session"),
                                         dbSession)
@@ -155,4 +155,4 @@ async def delete_shorted_url(shorted_url_id: str,
 
     await request.app.state.async_redis_session.delete((DOMAIN + "/" + shorted_url_id))
 
-    return "Deleting successful!"
+    return Response(status_code=200)

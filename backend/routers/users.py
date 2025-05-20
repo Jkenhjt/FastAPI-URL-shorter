@@ -25,7 +25,7 @@ limiter = Limiter(key_func=get_remote_address)
 @limiter.limit("10/minute")
 async def register(account: UsersModel,
                    request: Request,
-                   dbSession: SessionUsers):
+                   dbSession: SessionUsers) -> None:
     try:
         account_result = await dbSession.execute(select(UsersScheme)
                                                 .where(UsersScheme.username == account.username))
@@ -43,18 +43,14 @@ async def register(account: UsersModel,
     dbSession.add(db_new_user)
     await dbSession.commit()
 
-<<<<<<< HEAD
-@routerUsers.post("/login")
-=======
     return Response(status_code=200)
 
 @routerUsers.post("/login", tags=["Account"])
->>>>>>> cdf2d22 (	modified:   README.md)
 @limiter.limit("10/minute")
 async def login(account: UsersModel,
                 request: Request,
                 response: Response,
-                dbSession: SessionUsers):
+                dbSession: SessionUsers) -> None:
     try:
         dbAccount = (
             await dbSession.execute(
