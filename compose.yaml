@@ -19,7 +19,7 @@ services:
 ##############           PostgreSQL Container            ##############
 
   db:
-    image: postgres:latest
+    image: postgres:17.5-alpine
     ports:
       - 5431:5432
     restart: always

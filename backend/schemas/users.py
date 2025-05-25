@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, LargeBinary
 from sqlalchemy.orm import declarative_base
 
 BaseUsers = declarative_base()
@@ -9,7 +9,7 @@ class UsersScheme(BaseUsers):
     id = Column(Integer(), primary_key=True)
 
     username = Column(String())
-    password = Column(String())
+    password = Column(LargeBinary())
 
     token_session = Column(String())
 

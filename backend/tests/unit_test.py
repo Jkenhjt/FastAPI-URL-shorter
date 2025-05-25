@@ -17,7 +17,6 @@ from models.users import UsersModel
 from models.links import LinksModel
 
 from security.jwt import create_token
-from security.bcrypt_secure import bcrypt_securing
 
 
 
@@ -27,7 +26,7 @@ from security.bcrypt_secure import bcrypt_securing
 class TestDatabase():
     user: UsersScheme = UsersScheme(
         username="admins",
-        password="admins",
+        password=b"admins",
         token_session="admintoken"
     )
 
@@ -50,13 +49,13 @@ class TestDatabase():
                 await session.execute(
                     select(UsersScheme)
                     .where(UsersScheme.username == "admins")
-                    .where(UsersScheme.password == "admins")
+                    .where(UsersScheme.password == b"admins")
                     .limit(1)
                 )
             ).scalar_one()
 
             assert result.username == "admins"
-            assert result.password == "admins"
+            assert result.password == b"admins"
             assert result.token_session == "admintoken"
 
     @pytest.mark.asyncio
@@ -256,8 +255,3 @@ def test_jwt():
     token: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyMzQ1NiwiZXhwIjotMX0.XH53II-RWiUZXNuThNFtYgVOjVf1U2XQw6W_V2Qzyyc"
 
     assert create_token(123456) == token
-
-def test_bcrypt_securing():
-    token: str = "e82c477f3a388c437399f46de2046856c6dd31fecf6f5dbc0f7ca863952a7745987a37956e66b7789ed6420532e8fe8bd392527f51708369b2f184eef696ce8b"
-
-    assert bcrypt_securing("test") == token

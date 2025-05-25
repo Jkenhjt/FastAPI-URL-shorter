@@ -6,6 +6,8 @@ from slowapi.util import get_remote_address
 from sqlalchemy import select, update
 from sqlalchemy.exc import NoResultFound
 
+import bcrypt
+
 from database.database import SessionUsers
 
 from schemas.users import UsersScheme
@@ -53,13 +55,10 @@ async def login(account: UsersModel,
                 dbSession: SessionUsers) -> None:
     try:
         dbAccount = (
-            await dbSession.execute(
-                select(UsersScheme)
-                .where(UsersScheme.username == account.username)
-            )
-        ).scalar_one()
+            await dbSession.execute(select(UsersScheme)
+                                   .where(UsersScheme.username == account.username))).scalar_one()
 
-        if(dbAccount.password != bcrypt_securing(account.password)):
+        if(not bcrypt.checkpw(account.password.encode(), dbAccount.password)):
             raise NoResultFound
     except NoResultFound:
         raise HTTPException(status_code=404,
