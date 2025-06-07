@@ -16,6 +16,7 @@ Additionally, the application is integrated with **Prometheus** for monitoring a
 | **Caching**       | Aioredis                                             |
 | **Security**      | AuthLib (JWT), bcrypt                                |
 | **Rate Limiting** | SlowAPI                                              |
+| **Migration**     | Alembic                                              |
 | **Monitoring**    | Prometheus, Grafana                                  |
 | **Testing**       | PyTest                                               |
 | **Deployment**    | Docker, Docker Compose, Nginx                        |
@@ -49,5 +50,3 @@ docker compose up --build
 - 🧪 Test coverage with PyTest
 - 🐳 Full Docker support with Nginx reverse proxy
 - ⚡ High-performance async backend
-- 📊 Prometheus monitoring integration for real-time metrics collection
-- 📈 Grafana dashboards for visualizing API performance in real-time

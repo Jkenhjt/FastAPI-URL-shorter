@@ -2,11 +2,11 @@ import requests
 
 shorted_url: str = ""
 
+
 class TestRouters:
     session = requests.Session()
 
     cookies: str = ""
-
 
     def test_account_register(self):
         payload = {"username": "admins2", "password": "admins2"}
@@ -27,10 +27,7 @@ class TestRouters:
     def test_create_link(self):
         payload = {"url": "https://www.google.com", "time_ending": "7d"}
 
-        resp = self.session.post(
-            "http://0.0.0.0:8000/create_link",
-            json=payload
-        )
+        resp = self.session.post("http://0.0.0.0:8000/create_link", json=payload)
 
         assert resp.status_code == 200
 
