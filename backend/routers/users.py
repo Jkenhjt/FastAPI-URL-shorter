@@ -25,21 +25,20 @@ limiter = Limiter(key_func=get_remote_address)
 
 @routerUsers.post("/register", tags=["Account"])
 @limiter.limit("10/minute")
-async def register(account: UsersModel,
-                   request: Request,
-                   dbSession: SessionUsers) -> None:
+async def register(
+    account: UsersModel, request: Request, dbSession: SessionUsers
+) -> None:
     try:
-        account_result = await dbSession.execute(select(UsersScheme)
-                                                .where(UsersScheme.username == account.username))
-        if(account_result.scalar_one() != None):
-            raise HTTPException(status_code=406,
-                                detail="User already exist")
+        account_result = await dbSession.execute(
+            select(UsersScheme).where(UsersScheme.username == account.username)
+        )
+        if account_result.scalar_one() != None:
+            raise HTTPException(status_code=406, detail="User already exist")
     except NoResultFound:
         pass
 
     db_new_user = UsersScheme(
-        username=account.username,
-        password=bcrypt_securing(account.password)
+        username=account.username, password=bcrypt_securing(account.password)
     )
 
     dbSession.add(db_new_user)
@@ -47,29 +46,31 @@ async def register(account: UsersModel,
 
     return Response(status_code=200)
 
+
 @routerUsers.post("/login", tags=["Account"])
 @limiter.limit("10/minute")
-async def login(account: UsersModel,
-                request: Request,
-                response: Response,
-                dbSession: SessionUsers) -> None:
+async def login(
+    account: UsersModel, request: Request, response: Response, dbSession: SessionUsers
+) -> None:
     try:
         dbAccount = (
-            await dbSession.execute(select(UsersScheme)
-                                   .where(UsersScheme.username == account.username))).scalar_one()
+            await dbSession.execute(
+                select(UsersScheme).where(UsersScheme.username == account.username)
+            )
+        ).scalar_one()
 
-        if(not bcrypt.checkpw(account.password.encode(), dbAccount.password)):
+        if not bcrypt.checkpw(account.password.encode(), dbAccount.password):
             raise NoResultFound
     except NoResultFound:
-        raise HTTPException(status_code=404,
-                            detail="Username or password is incorrect")
+        raise HTTPException(status_code=404, detail="Username or password is incorrect")
 
-    token: str = create_token(dbAccount.id)
+    token: str = create_token(dbAccount.id, dbAccount.username)
 
-    await dbSession.execute(update(UsersScheme)
-                           .where(UsersScheme.id == dbAccount.id)
-                           .values(token_session=token))
+    await dbSession.execute(
+        update(UsersScheme)
+        .where(UsersScheme.id == dbAccount.id)
+        .values(token_session=token)
+    )
     await dbSession.commit()
 
-    return response.set_cookie(key="session",
-                               value=token)
+    return response.set_cookie(key="session", value=token)

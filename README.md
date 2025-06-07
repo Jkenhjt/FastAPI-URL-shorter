@@ -1,37 +1,47 @@
-# FastAPI-URL-Shortener
-This is a simple and efficient URL shortener API built using **FastAPI**. The API supports creating, retrieving, and redirecting shortened URLs. It uses a **FastAPI** for backend, and **PostgreSQL** for db. It also uses accounts, **JWT** and **bcrypt** for encrypting logins and passwords in db. Full list of used technologies is below.
+# 🚀 FastAPI URL Shortener
 
-# Technologies:
-FastAPI
+A simple and efficient **URL shortener API** built using **FastAPI**. This project allows users to create, retrieve, and redirect shortened URLs with account-based access. It includes user authentication via **JWT**, password hashing with **bcrypt**, and uses a **PostgreSQL** database. The API is containerized using **Docker** and includes Nginx for production-ready deployments.
 
-SlowAPI
+---
 
-SQLAlchemy
+## 🛠️ Tech Stack
 
-Asyncpg
+| Category          | Technologies Used                                    |
+|-------------------|------------------------------------------------------|
+| **Backend**       | FastAPI, SQLAlchemy, PyDantic                        |
+| **Database**      | PostgreSQL, Asyncpg                                  |
+| **Caching**       | Aioredis                                             |
+| **Security**      | AuthLib (JWT), bcrypt                                |
+| **Rate Limiting** | SlowAPI                                              |
+| **Testing**       | PyTest                                               |
+| **Deployment**    | Docker, Docker Compose, Nginx                        |
 
-PyDantic
+---
 
-Aioredis
+## 🚀 Getting Started
 
-AuthLib(JWT)
+### 1. Clone the repository
 
-Bcrypt
-
-PyTest
-
-Nginx
-
-Docker
-
-Docker Compose
-
-# Steps to deploy
-
-### 1. Start Docker Compose
-```
+```bash
+git clone https://github.com/your-username/fastapi_url_shortener.git
 cd fastapi_url_shortener
-docker compose up --build        *Wait until the deployment is complete*
 ```
 
-### 2. Deployment finished
+### 2. Start Docker Compose
+
+```bash
+docker compose up --build
+```
+
+🕒 *Wait until the deployment is complete. Services will be available shortly.*
+
+---
+
+## 📦 Features
+
+- 🔐 Secure user authentication (JWT, bcrypt)
+- 🔗 URL shortening and redirection
+- 📈 Rate limiting with SlowAPI
+- 🧪 Test coverage with PyTest
+- 🐳 Full Docker support with Nginx reverse proxy
+- ⚡ High-performance async backend

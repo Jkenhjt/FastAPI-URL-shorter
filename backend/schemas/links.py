@@ -3,6 +3,7 @@ from sqlalchemy.orm import declarative_base
 
 BaseLinks = declarative_base()
 
+
 class LinksScheme(BaseLinks):
     __tablename__ = "links"
 
@@ -18,4 +19,4 @@ class LinksScheme(BaseLinks):
 
     def __repr__(self) -> str:
         return f""" id={self.id}, orig_url={self.orig_url}, shorted_url={self.shorted_url}, 
-                    create_date={self.create_date}, terminating_date={self.terminating_date} """
+                    create_date={self.create_date}, terminating_date={self.terminating_date}, owner={self.owner} """

@@ -1,62 +1,52 @@
 import requests
 
-username: str = "admins2"
-password: str = "admins2"
-
-cookies: str = ""
-
-org_url: str = "https://www.google.com"
 shorted_url: str = ""
 
-def test_account_register():
-    payload = {
-        "username": username,
-        "password": password
-    }
+class TestRouters:
+    session = requests.Session()
 
-    resp = requests.post("http://0.0.0.0:8000/register",
-                         json=payload)
+    cookies: str = ""
 
-    assert resp.status_code == 200
 
-def test_account_login():
-    payload = {
-        "username": username,
-        "password": password
-    }
+    def test_account_register(self):
+        payload = {"username": "admins2", "password": "admins2"}
 
-    resp = requests.post("http://0.0.0.0:8000/login",
-                         json=payload)
+        resp = self.session.post("http://0.0.0.0:8000/register", json=payload)
 
-    assert resp.status_code == 200
+        assert resp.status_code == 200
 
-    assert resp.cookies.get_dict()["session"] != None
+    def test_account_login(self):
+        payload = {"username": "admins2", "password": "admins2"}
 
-    global cookies
-    cookies = resp.cookies.get_dict()["session"]
+        resp = self.session.post("http://0.0.0.0:8000/login", json=payload)
 
-def test_create_link():
-    payload = {
-        "url": org_url,
-        "time_ending": "7d"
-    }
+        assert resp.status_code == 200
 
-    resp = requests.post("http://0.0.0.0:8000/create_link",
-                         json=payload,
-                         cookies={"session": cookies})
+        assert resp.cookies.get_dict()["session"] != None
 
-    assert resp.status_code == 200
+    def test_create_link(self):
+        payload = {"url": "https://www.google.com", "time_ending": "7d"}
 
-    assert "http://0.0.0.0:8000/" in resp.json()["url"]
+        resp = self.session.post(
+            "http://0.0.0.0:8000/create_link",
+            json=payload
+        )
 
-    global shorted_url
-    shorted_url = resp.json()["url"]
+        assert resp.status_code == 200
 
-def test_get_link():
-    resp = requests.get(shorted_url)
-    assert resp.status_code == 200
+        assert "http://0.0.0.0:8000/" in resp.json()["url"]
 
-def test_delete_link():
-    resp = requests.delete(shorted_url,
-                           cookies={"session": cookies})
-    assert resp.status_code == 200
+        global shorted_url
+        shorted_url = resp.json()["url"]
+
+    def test_get_link(self):
+        global shorted_url
+
+        resp = self.session.get(shorted_url)
+        assert resp.status_code == 200
+
+    def test_delete_link(self):
+        global shorted_url
+
+        resp = self.session.delete(shorted_url)
+        assert resp.status_code == 200

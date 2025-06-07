@@ -7,15 +7,9 @@ key: str = """  9c03b53595e94ce1b0573a5d0a682d4e
                 7eafe64c95cfd061167472f669ad22c3 """
 
 
-def create_token(id: int) -> str:
-    header = {
-        "alg": "HS256",
-        "typ": "JWT"
-    }
+def create_token(id: int, username: str) -> str:
+    header = {"alg": "HS256", "typ": "JWT"}
 
-    payload = {
-        "sub": id,
-        "exp": -1
-    }
+    payload = {"name": username, "sub": id, "exp": -1}
 
     return jwt.encode(header=header, payload=payload, key=key, check=True).decode()

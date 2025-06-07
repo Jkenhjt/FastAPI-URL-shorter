@@ -1,4 +1,4 @@
-FROM redis:latest
+FROM redis:alpine3.21
 
 WORKDIR /redis_config
 

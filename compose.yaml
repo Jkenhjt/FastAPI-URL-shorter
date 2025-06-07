@@ -1,8 +1,4 @@
 services:
-
-
-##############              API Container                ##############
-
   backend:
     depends_on:
       - db
@@ -14,12 +10,8 @@ services:
       - 8080:8000
     volumes:
       - backend_volume:/backend
-
-
-##############           PostgreSQL Container            ##############
-
   db:
-    image: postgres:17.5-alpine
+    image: postgres:17.5-alpine3.22
     ports:
       - 5431:5432
     restart: always
@@ -34,10 +26,6 @@ services:
       retries: 10
     volumes:
       - db_volume:/var/lib/postgresql/data
-
-
-##############              Redis Container              ##############
-
   redis:
     build:
       context: ./redis_config
@@ -46,10 +34,6 @@ services:
       - 6379:6379
     volumes:
       - redis_volume:/redis_config
-
-
-##############              Nginx Container              ##############
-
   nginx:
     depends_on:
       - backend
@@ -64,8 +48,6 @@ services:
 
 volumes:
   backend_volume:
-
   db_volume:
-
   redis_volume:
   nginx_volume:
