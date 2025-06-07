@@ -44,6 +44,25 @@ services:
       - 443:443
     volumes:
       - nginx_volume:/nginx_config
+  node_exporter:
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+    volumes:
+      - node_exporter:/node_exporter
+  prometheus:
+    build:
+      context: ./prometheus_config
+    ports:
+      - 9090:9090
+    volumes:
+      - prometheus:/prometheus
+  grafana:
+    image: grafana/grafana-oss
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
 
 
 volumes:
@@ -51,3 +70,6 @@ volumes:
   db_volume:
   redis_volume:
   nginx_volume:
+  node_exporter:
+  prometheus:
+  grafana:
