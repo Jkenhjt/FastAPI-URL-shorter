@@ -2,6 +2,9 @@
 
 A simple and efficient **URL shortener API** built using **FastAPI**. This project allows users to create, retrieve, and redirect shortened URLs with account-based access. It includes user authentication via **JWT**, password hashing with **bcrypt**, and uses a **PostgreSQL** database. The API is containerized using **Docker** and includes Nginx for production-ready deployments.
 
+Additionally, the application is integrated with **Prometheus** for monitoring and **Grafana** for visualization, enabling real-time monitoring of key metrics.
+
+
 ---
 
 ## 🛠️ Tech Stack
@@ -13,6 +16,7 @@ A simple and efficient **URL shortener API** built using **FastAPI**. This proje
 | **Caching**       | Aioredis                                             |
 | **Security**      | AuthLib (JWT), bcrypt                                |
 | **Rate Limiting** | SlowAPI                                              |
+| **Monitoring**    | Prometheus, Grafana                                  |
 | **Testing**       | PyTest                                               |
 | **Deployment**    | Docker, Docker Compose, Nginx                        |
 
@@ -45,3 +49,5 @@ docker compose up --build
 - 🧪 Test coverage with PyTest
 - 🐳 Full Docker support with Nginx reverse proxy
 - ⚡ High-performance async backend
+- 📊 Prometheus monitoring integration for real-time metrics collection
+- 📈 Grafana dashboards for visualizing API performance in real-time
